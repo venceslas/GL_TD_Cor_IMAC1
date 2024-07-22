@@ -16,6 +16,10 @@
 *.dylib
 *.dll
 
+# Assets file
+*.png
+*.jpg
+
 # Fortran module files
 *.mod
 *.smod
