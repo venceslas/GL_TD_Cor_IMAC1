@@ -11,7 +11,7 @@ out vec3 color;
 void main()
 {
 	//gl_Position = projectionMat*modelviewMat*vec4(vx_pos,1.0);
-	gl_Position = projectionMat*vec4(vx_pos,1.0);
+	gl_Position = projectionMat*vec4(vx_pos,0.0,1.0);
 	//gl_Position = vec4(vx_pos,0.0,1.0);
 	color = vx_col;
 	//color = vec3(1.0,1.0,0.0);

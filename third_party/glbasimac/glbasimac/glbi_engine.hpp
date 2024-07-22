@@ -9,15 +9,9 @@ using namespace STP3D;
 namespace glbasimac {
 
 struct GLBI_Engine {
-	GLBI_Engine():mode2D(false) {
-		std::cout<<"Engine initialization"<<std::endl;
-	}
+	GLBI_Engine():mode2D(true) {}
 
-	~GLBI_Engine() {
-
-
-		std::cerr<<"Fin de l'engine"<<std::endl;
-	}
+	~GLBI_Engine() {}
 
 	// Set the OpenGL Engine
 	void initGL();
@@ -28,8 +22,6 @@ struct GLBI_Engine {
 	void setFlatColor(float r,float g,float b,int ids=0);
 	// Send current transformation to GL Engine. ids is the id of the shader to set.
 	void updateMvMatrix(int ids=0);
-
-	void test();
 
 	// GL parameters
 	unsigned int idShader[3];

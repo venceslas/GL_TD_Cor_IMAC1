@@ -16,7 +16,7 @@ namespace glbasimac {
 		pts.size_one_elt.push_back(2);
 		pts.attr_semantic.push_back("coordinates");
 
-		color_pts.resize(3*MAX_NB_POINTS_SET_OF_POINTS,1.0f);
+		color_pts.resize(3*MAX_NB_POINTS_SET_OF_POINTS,0.0f);
 		//color_pts[0] = 1.0;
 		pts.buffers.push_back(color_pts.data());
 		pts.copied.push_back(false);
@@ -32,8 +32,30 @@ namespace glbasimac {
 		glBindVertexArray(pts.id_vao);
 
 		//std::cerr<<"N= "<<nb_pts<<std::endl;
-		glDrawArrays(GL_POINTS,0,1);
+		glDrawArrays(GL_POINTS,0,nb_pts);
 
 		glBindVertexArray(0);
 	}
+
+	void GLBI_Set_Of_Points::addAPoint(float x,float y,float c_r,float c_v,float c_b) {
+		coord_pts[2*nb_pts]=x;
+		coord_pts[2*nb_pts+1]=y;
+		color_pts[3*nb_pts]=c_r;
+		color_pts[3*nb_pts+1]=c_v;
+		color_pts[3*nb_pts+2]=c_b;
+
+		nb_pts++;
+
+		glBindVertexArray(pts.id_vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER,pts.vbo_id[0]);
+		glBufferSubData(GL_ARRAY_BUFFER,0,2*nb_pts*sizeof(float),coord_pts.data());
+
+		glBindBuffer(GL_ARRAY_BUFFER,pts.vbo_id[1]);
+		glBufferSubData(GL_ARRAY_BUFFER,0,3*nb_pts*sizeof(float),color_pts.data());
+
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		glBindVertexArray(0);
+	}
+
 }

@@ -9,6 +9,7 @@ namespace glbasimac {
 		std::cout<<"Initialisation of GL Engine"<<std::endl;
 
 		if (mode2D) {
+			std::cerr<<"Flat 2D"<<std::endl;
 			idShader[0] = ShaderManager::loadShader("../assets/shaders/flat_shading_2D.vert","../assets/shaders/flat_shading.frag",true);
 		}
 
@@ -17,10 +18,6 @@ namespace glbasimac {
 
 	void GLBI_Engine::setFlatColor(float r,float g,float b,int ids) {
 		glVertexAttrib3f(glGetAttribLocation(idShader[ids],"vx_col"),r,g,b);
-	}
-
-	void GLBI_Engine::test() {
-		
 	}
 
 	void GLBI_Engine::updateMvMatrix(int ids) {

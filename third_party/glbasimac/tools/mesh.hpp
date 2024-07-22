@@ -127,6 +127,7 @@ namespace STP3D {
 
 		// Transfer all data for all VBO from CPU to GPU
 		for(std::vector<int>::size_type i = 0; i < buffers.size(); ++i) {
+			std::cerr<<"Id VBO for "<<attr_semantic[i]<<" : "<<vbo_id[i]<<std::endl;
 			glBindBuffer(GL_ARRAY_BUFFER,vbo_id[i]);
 
 			glBufferData(GL_ARRAY_BUFFER,nb_elts*size_one_elt[i]*sizeof(GLfloat),buffers[i],GL_STATIC_DRAW);
