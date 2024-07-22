@@ -14,6 +14,9 @@ struct GLBI_Engine {
 	}
 
 	~GLBI_Engine() {
+
+
+		std::cerr<<"Fin de l'engine"<<std::endl;
 	}
 
 	// Set the OpenGL Engine
