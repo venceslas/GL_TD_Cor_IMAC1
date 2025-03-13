@@ -67,9 +67,9 @@ void initScene() {
 	std::vector<float> pt_pan{0.0,0.0,0.0,
 								3.0,0.0,-5.0,
 								0.0,0.0,0.0,
-								3.0*cosf(2.0*M_PI/3.0),3.0*sinf(2.0*M_PI/3.0),-5.0,
+								3.0f*cosf(2.0*M_PI/3.0),3.0f*sinf(2.0*M_PI/3.0),-5.0,
 								0.0,0.0,0.0,
-								3.0*cosf(4.0*M_PI/3.0),3.0*sinf(4.0*M_PI/3.0),-5.0};
+								3.0f*cosf(4.0*M_PI/3.0),3.0f*sinf(4.0*M_PI/3.0),-5.0};
 	string_pan.initSet(pt_pan,1.0,0.0,0.0);
 	string_pan.changeNature(GL_LINES);
 
