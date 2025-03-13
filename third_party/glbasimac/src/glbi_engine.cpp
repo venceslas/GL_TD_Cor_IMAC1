@@ -28,6 +28,10 @@ namespace glbasimac {
 			glUniform1f(glGetUniformLocation(idShader[1],"shininess"),0.0);
 			glUniform1i(glGetUniformLocation(idShader[1],"numOfLight"),numberOfLight);
 			glUniform1i(glGetUniformLocation(idShader[1],"use_texture"),useTexture);
+			glUniform4fv(glGetUniformLocation(idShader[1],"lightPos"),numberOfLight,&lightPos[0][0]);
+			glUniform3fv(glGetUniformLocation(idShader[1],"lightIntensity"),numberOfLight,&(lightIntensity[0][0]));
+			glUniform3fv(glGetUniformLocation(idShader[1],"lightDirCone"),numberOfLight,&(lightDirSpot[0][0]));
+			glUniform1fv(glGetUniformLocation(idShader[1],"lightAngle"),numberOfLight,&(lightAngle[0]));
 			glUseProgram(idShader[0]);
 		}
 		else {
@@ -160,10 +164,14 @@ namespace glbasimac {
 			numberOfLight++;
 			lightPos.push_back(light_pos);
 			lightIntensity.push_back(light_intensity);
+			lightAngle.push_back(0.0);
+			lightDirSpot.push_back({0.0,0.0,0.0});
 			glUseProgram(idShader[1]);
 			glUniform1i(glGetUniformLocation(idShader[1],"numOfLight"),numberOfLight);
-			glUniform3fv(glGetUniformLocation(idShader[currentShader],"lightIntensity"),numberOfLight,&(lightIntensity[0][0]));
-			glUniform4fv(glGetUniformLocation(idShader[currentShader],"lightPos"),numberOfLight,&lightPos[0][0]);
+			glUniform3fv(glGetUniformLocation(idShader[1],"lightIntensity"),numberOfLight,&(lightIntensity[0][0]));
+			glUniform4fv(glGetUniformLocation(idShader[1],"lightPos"),numberOfLight,&lightPos[0][0]);
+			glUniform3fv(glGetUniformLocation(idShader[1],"lightDirCone"),numberOfLight,&(lightDirSpot[0][0]));
+			glUniform1fv(glGetUniformLocation(idShader[1],"lightAngle"),numberOfLight,&(lightAngle[0]));
 			glUseProgram(idShader[currentShader]);
 		}
 	}
