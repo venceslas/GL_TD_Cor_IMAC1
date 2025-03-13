@@ -2,7 +2,6 @@
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 #include "glbasimac/glbi_engine.hpp"
-#include <GL/gl.h>
 #include <iostream>
 
 using namespace glbasimac;

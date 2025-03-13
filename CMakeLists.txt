@@ -7,11 +7,6 @@ project(TD_GL_IMAC1)
 set(OUTPUT_BIN_FOLDER ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Configure assets header file
-# tips found here : https://shot511.github.io/2018-05-29-how-to-setup-opengl-project-with-cmake/
-configure_file(src/helpers/RootDir.hpp.in src/helpers/RootDir.hpp)
-include_directories(${CMAKE_BINARY_DIR}/src)
-
 # Librairies
 
 # ---Add GL---
@@ -36,7 +31,7 @@ set(ALL_LIBRARIES ${ALL_LIBRARIES} glad)
 add_subdirectory(third_party/glbasimac)
 set(ALL_LIBRARIES ${ALL_LIBRARIES} glbasimac)
 include_directories(third_party/glbasimac/)
-
+set(CMAKE_COLOR_MAKEFILE ON)
 
 file(GLOB TD_DIRECTORIES "TD*")
 

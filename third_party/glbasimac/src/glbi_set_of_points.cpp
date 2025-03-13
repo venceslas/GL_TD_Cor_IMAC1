@@ -3,59 +3,89 @@
 
 namespace glbasimac {
 
-	void GLBI_Set_Of_Points::initSet() {
-		//glUseProgram(idShader[0]);
-		std::cerr<<"Type of set points : "<<pts.gl_type_mesh<<std::endl;
-		std::cerr<<"Nb max of points : "<<pts.nb_elts<<std::endl;
-		std::cerr<<"Nb of points : "<<nb_pts<<std::endl;
+	void GLBI_Set_Of_Points::initSet(const std::vector<float> in_coord,float c_r,float c_v,float c_b) {
+		coord_pts.clear();
+		color_pts.clear();
+		if (dimension == 2) {
+			assert(in_coord.size()%2 == 0);
+			nb_pts = in_coord.size()/2;
+			std::cerr<<"Nb ponts "<<nb_pts<<std::endl;
+		}
+		if (dimension == 3) {
+			assert(in_coord.size()%3 == 0);
+			nb_pts = in_coord.size()/3;
+			std::cerr<<"Nb ponts "<<nb_pts<<std::endl;
+		}
 
-		coord_pts.resize(2*MAX_NB_POINTS_SET_OF_POINTS,0.0f);
-		pts.buffers.push_back(coord_pts.data());
-		pts.copied.push_back(false);
-		pts.attr_id.push_back(0);
-		pts.size_one_elt.push_back(2);
-		pts.attr_semantic.push_back("coordinates");
+		pts.setNbElt(nb_pts);
+		coord_pts = in_coord;
+		pts.addOneBuffer(0,dimension,coord_pts.data(),"Coordinates",false);
 
-		color_pts.resize(3*MAX_NB_POINTS_SET_OF_POINTS,0.0f);
-		//color_pts[0] = 1.0;
-		pts.buffers.push_back(color_pts.data());
-		pts.copied.push_back(false);
-		pts.attr_id.push_back(3);
-		pts.size_one_elt.push_back(3);
-		pts.attr_semantic.push_back("Colors");
+		for(size_t i{0};i<in_coord.size()/dimension;i++) {
+			color_pts.push_back(c_r);
+			color_pts.push_back(c_v);
+			color_pts.push_back(c_b);
+		}
 
-		pts.createVAO();
+		pts.addOneBuffer(3,3,color_pts.data(),"Color",false);
+
+		if(!pts.createVAO()) {
+			std::cerr<<"Unable to create VAO for Set of Points"<<std::endl;
+			exit(1);
+		}
+	}
+
+	void GLBI_Set_Of_Points::initSet(const std::vector<float> in_coord,const std::vector<float> in_color) {
+		coord_pts.clear();
+		color_pts.clear();
+		if (dimension == 2) {
+			assert(in_color.size()/3 == in_coord.size()/2);
+			nb_pts = in_coord.size()/2;
+			std::cerr<<"Nb ponts "<<nb_pts<<std::endl;
+
+		}
+		if (dimension == 3) {
+			assert(in_color.size()/3 == in_coord.size()/3);
+			nb_pts = in_coord.size()/3;
+		}
+		pts.setNbElt(nb_pts);
+
+		coord_pts = in_coord;
+		pts.addOneBuffer(0,dimension,coord_pts.data(),"Coordinates",false);
+
+		color_pts = in_color;
+		pts.addOneBuffer(3,3,color_pts.data(),"Color",false);
+
+		if(!pts.createVAO()) {
+			std::cerr<<"Unable to create VAO for Set of Points"<<std::endl;
+			exit(1);
+		}
+	}
+
+	void GLBI_Set_Of_Points::addAPoint(float* n_coord,float* n_col) {
+		coord_pts.push_back(n_coord[0]);
+		coord_pts.push_back(n_coord[1]);
+		if (dimension == 3) coord_pts.push_back(n_coord[2]);
+		color_pts.push_back(n_col[0]);
+		color_pts.push_back(n_col[1]);
+		color_pts.push_back(n_col[2]);
+
+		pts.setNbElt(color_pts.size()/3);
+		pts.reInit();
+
+		pts.addOneBuffer(0,2,coord_pts.data(),"Coordinates",false);
+		pts.addOneBuffer(3,3,color_pts.data(),"Color",false);
+		if(!pts.createVAO()) {
+			std::cerr<<"Unable to create VAO for Set of Points"<<std::endl;
+			exit(1);
+		}
+	}
+
+	void GLBI_Set_Of_Points::changeNature(unsigned int new_gl_type) {
+		pts.changeType(new_gl_type);
 	}
 
 	void GLBI_Set_Of_Points::drawSet() {
-		//std::cerr<<"VAO : "<<pts.id_vao<<std::endl;
-		glBindVertexArray(pts.id_vao);
-
-		//std::cerr<<"N= "<<nb_pts<<std::endl;
-		glDrawArrays(GL_POINTS,0,nb_pts);
-
-		glBindVertexArray(0);
+		pts.draw();
 	}
-
-	void GLBI_Set_Of_Points::addAPoint(float x,float y,float c_r,float c_v,float c_b) {
-		coord_pts[2*nb_pts]=x;
-		coord_pts[2*nb_pts+1]=y;
-		color_pts[3*nb_pts]=c_r;
-		color_pts[3*nb_pts+1]=c_v;
-		color_pts[3*nb_pts+2]=c_b;
-
-		nb_pts++;
-
-		glBindVertexArray(pts.id_vao);
-
-		glBindBuffer(GL_ARRAY_BUFFER,pts.vbo_id[0]);
-		glBufferSubData(GL_ARRAY_BUFFER,0,2*nb_pts*sizeof(float),coord_pts.data());
-
-		glBindBuffer(GL_ARRAY_BUFFER,pts.vbo_id[1]);
-		glBufferSubData(GL_ARRAY_BUFFER,0,3*nb_pts*sizeof(float),color_pts.data());
-
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		glBindVertexArray(0);
-	}
-
 }

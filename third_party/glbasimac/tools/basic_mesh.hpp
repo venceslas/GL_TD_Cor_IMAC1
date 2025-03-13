@@ -63,7 +63,7 @@ namespace STP3D {
 	  * \param radius_up to create a truncated cone with a up radius of radius_up
 	  * \param nb_div number of division (in triangles) for the cone
 	  */
-	StandardMesh* basicCone(float h,float radius,float radius_up = 0.0,uint nb_div = 64);
+	StandardMesh* basicCone(float h,float radius,float radius_up = 0.0,unsigned int nb_div = 64);
 
 	/** Create a basic cylinder on the y axis
 	  * This function create a mesh for a basic cylinder along the y axis without top and bottom closure.
@@ -74,7 +74,7 @@ namespace STP3D {
 	  * \param div_round number of division for the cylinder
 	  * \param div_height number of division for the cylinder
 	  */
-	IndexedMesh* basicCylinder(float h,float radius,uint div_round = 64,uint div_height = 1);
+	IndexedMesh* basicCylinder(float h,float radius,unsigned int div_round = 64,unsigned int div_height = 1);
 
 	/** Create a basic cube surounding the origine
 	  * This function create a cube centered at the origine with a specific size
@@ -89,7 +89,7 @@ namespace STP3D {
 	  * The mesh stores only the coordinates, leaving all material properties to the application
 	  * \param radius radius of the sphere
 	  */
-	IndexedMesh* basicSphere(float radius = 1.0f,uint nb_div_h=64, uint nb_div_circle=64);
+	IndexedMesh* basicSphere(float radius = 1.0f,unsigned int nb_div_h=64, unsigned int nb_div_circle=64);
 
 	inline StandardMesh* createRepere(float lg) {
 		StandardMesh* repere = new StandardMesh(6,GL_LINES);
@@ -121,7 +121,7 @@ namespace STP3D {
 		return rect;
 	}
 
-	inline StandardMesh* basicCone(float h,float radius,float r_up,uint nb_div) {
+	inline StandardMesh* basicCone(float h,float radius,float r_up,unsigned int nb_div) {
 		StandardMesh* cone = new StandardMesh((nb_div+1)*2,GL_TRIANGLE_STRIP);
 		float* coord = new float[(nb_div+1)*2*3];
 		float* normals = new float[(nb_div+1)*2*3];
@@ -133,7 +133,7 @@ namespace STP3D {
 		double cos_to_xz = cos(angle_to_axis_y);
 		double sin_to_xz = sin(angle_to_axis_y);
 		//std::cerr<<"P : "<<angle_to_axis_y*180.0/M_PI<<" ("<<cos_to_xz<<") "<<std::endl;
-		for(uint i=0;i<=nb_div;i++,angle+=2*M_PI/nb_div) {
+		for(unsigned int i=0;i<=nb_div;i++,angle+=2*M_PI/nb_div) {
 			// Head of the cone (repeated)
 			cos_pt = cos(angle);
 			sin_pt = sin(angle);
@@ -150,21 +150,21 @@ namespace STP3D {
 		return cone;
 	}
 
-	inline IndexedMesh* basicCylinder(float h,float radius,uint div_round,uint div_height) {
-		uint nb_points = (div_round+1)*(div_height+1);
-		uint nb_prim = 2*div_round*div_height;
+	inline IndexedMesh* basicCylinder(float h,float radius,unsigned int div_round,unsigned int div_height) {
+		unsigned int nb_points = (div_round+1)*(div_height+1);
+		unsigned int nb_prim = 2*div_round*div_height;
 		IndexedMesh* cyl = new IndexedMesh(nb_prim,nb_points,GL_TRIANGLES);
 		float* coord = new float[nb_points*3];
 		float* normals = new float[nb_points*3];
 		float* uv = new float[nb_points*2];
-		uint* indexes = new uint[3*nb_prim];
+		unsigned int* indexes = new unsigned int[3*nb_prim];
 		double cos_pt,sin_pt;
 		double angle = 0.0;
 		double height = 0.0;
 		double incr_angle = 2*M_PI/div_round;
 		// Calcul des points
-		for(uint j=0;j<=div_height;j++,height+=h/div_height) {
-			for(uint i=0;i<=div_round;i++,angle+=incr_angle) {
+		for(unsigned int j=0;j<=div_height;j++,height+=h/div_height) {
+			for(unsigned int i=0;i<=div_round;i++,angle+=incr_angle) {
 				cos_pt = cos(angle);
 				sin_pt = sin(angle);
 				coord[3*j*(div_round+1)+3*i  ] = radius*cos_pt;
@@ -179,8 +179,8 @@ namespace STP3D {
 		}
 		
 		// Computation of indexes
-		for(uint  j=0;j<div_height;j++) {
-			for(uint i=0;i<div_round;i++) {
+		for(unsigned int  j=0;j<div_height;j++) {
+			for(unsigned int i=0;i<div_round;i++) {
 				indexes[j*div_round*6+6*i+0] = j*(div_round+1)+i;         // A
 				indexes[j*div_round*6+6*i+1] = j*(div_round+1)+(i+1);     // B
 				indexes[j*div_round*6+6*i+2] = (j+1)*(div_round+1)+i;     // C
@@ -198,8 +198,8 @@ namespace STP3D {
 	}
 
 	inline IndexedMesh* basicCube(float width) {
-		uint nb_points = 24;
-		uint nb_prim = 12;
+		unsigned int nb_points = 24;
+		unsigned int nb_prim = 12;
 		IndexedMesh* cube = new IndexedMesh(nb_prim,nb_points,GL_TRIANGLES);
 		float coord[3*24] = {
 			// Face front (z = width/2) (A,B,C,D)
@@ -261,7 +261,7 @@ namespace STP3D {
 			// Face down (y = -width/2) (A,E,F,B)
 			0.0,0.0,		1.0,0.0,		1.0,1.0,		0.0,1.0
 		};
-		uint indexes[3*12] = {
+		unsigned int indexes[3*12] = {
 			// Face front (z = width/2) (A,B,C,D)
 			0,1,2,		0,2,3,
 			// Face back (z = -width/2) (E,F,G,H)
@@ -284,11 +284,11 @@ namespace STP3D {
 		return cube;
 	}
 
-	inline IndexedMesh* basicSphere(float radius,uint nb_div_h, uint nb_div_circle) {
+	inline IndexedMesh* basicSphere(float radius,unsigned int nb_div_h, unsigned int nb_div_circle) {
 		assert(nb_div_h>1);
-		uint nb_points = 2+((nb_div_h-1)*(nb_div_circle+1));
+		unsigned int nb_points = 2+((nb_div_h-1)*(nb_div_circle+1));
 		
-		uint nb_prim = nb_div_circle*2 + (nb_div_h-2)*2*nb_div_circle;
+		unsigned int nb_prim = nb_div_circle*2 + (nb_div_h-2)*2*nb_div_circle;
 		IndexedMesh* sphere = new IndexedMesh(nb_prim,nb_points,GL_TRIANGLES);
 		float* coord = new float[nb_points*3];
 		float* normals = new float[nb_points*3];
@@ -315,10 +315,10 @@ namespace STP3D {
 		float inner_radius,y_value;
 		float step_y_angle = M_PI/(float)nb_div_h;
 		float step_circle_angle = 2*M_PI/(float)nb_div_circle;
-		for(uint i = 1; i <= (nb_div_h-1) ; i++) {
+		for(unsigned int i = 1; i <= (nb_div_h-1) ; i++) {
 			y_value = sin(-(M_PI/2.0)+i*step_y_angle);
 			inner_radius = cos(-M_PI/2.0+i*step_y_angle);
-			for(uint j=0; j <= nb_div_circle ; j++) {
+			for(unsigned int j=0; j <= nb_div_circle ; j++) {
 				pt_coord[0] = radius*inner_radius*cos(j*step_circle_angle);
 				pt_coord[2] = -radius*inner_radius*sin(j*step_circle_angle);
 				pt_coord[1] = radius*y_value;
@@ -349,19 +349,19 @@ namespace STP3D {
 		
 		
 		// LES INDICES
-		uint* indexes = new uint[3*nb_prim];
-		uint* pt_indx = indexes;
+		unsigned int* indexes = new unsigned int[3*nb_prim];
+		unsigned int* pt_indx = indexes;
 		
 		// South pole
-		for(uint i=0;i<nb_div_circle;i++) {
+		for(unsigned int i=0;i<nb_div_circle;i++) {
 			pt_indx[0] = 0;
 			pt_indx[1] = 1+i;
 			pt_indx[2] = 1+((i+1)%nb_div_circle);
 			pt_indx+=3;
 		}
 		// All quads
-		for(uint i = 1; i < (nb_div_h-1) ; i++) {
-			for(uint j=0; j < nb_div_circle ; j++) {
+		for(unsigned int i = 1; i < (nb_div_h-1) ; i++) {
+			for(unsigned int j=0; j < nb_div_circle ; j++) {
 				pt_indx[0] = 1 +  j    + (i-1)  * (nb_div_circle+1);
 				pt_indx[1] = 1 + (j+1) +   i    * (nb_div_circle+1);
 				pt_indx[2] = 1 +  j    +   i    * (nb_div_circle+1);
@@ -373,7 +373,7 @@ namespace STP3D {
 		}
 		// North pole
 		int k = (nb_div_h-2);
-		for(uint j=0;j<nb_div_circle;j++) {
+		for(unsigned int j=0;j<nb_div_circle;j++) {
 			pt_indx[0] = 1 +  j    + k * (nb_div_circle+1);
 			pt_indx[1] = 1 + (j+1) + k * (nb_div_circle+1);
 			pt_indx[2] = 1+((nb_div_h-1)*(nb_div_circle+1));
@@ -382,7 +382,7 @@ namespace STP3D {
 		
 		// Affichage indice
 		/*
-		for(uint i=0;i<nb_prim;i++) {
+		for(unsigned int i=0;i<nb_prim;i++) {
 			std::cerr<<"Primitive "<<i<<" : "<<indexes[3*i]<<" / "<<indexes[3*i+1]<<" / "<<indexes[3*i+2]<<std::endl;
 			
 		}
@@ -397,7 +397,6 @@ namespace STP3D {
 		//delete[](indexes);
 		return sphere;
 	}
-
 
 };
 

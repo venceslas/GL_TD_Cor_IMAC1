@@ -245,7 +245,7 @@ inline Vector4D Matrix4D::operator[](unsigned int col) {
 inline Matrix4D Matrix4D::operator-() const {
 	Matrix4D m;
 
-	for(uint i=0;i<16;i++)
+	for(unsigned int i=0;i<16;i++)
 		m.mat[i] = -mat[i];
 
 	return m;
@@ -254,14 +254,14 @@ inline Matrix4D Matrix4D::operator-() const {
 inline Matrix4D Matrix4D::operator+(const Matrix4D& ml) const {
 	Matrix4D m;
 
-	for(uint i=0;i<16;i++)
+	for(unsigned int i=0;i<16;i++)
 		m.mat[i] = mat[i]+ml.mat[i];
 
 	return m;
 }
 
 inline Matrix4D Matrix4D::operator+=(const Matrix4D& ml) {
-	for(uint i=0;i<16;i++)
+	for(unsigned int i=0;i<16;i++)
 		mat[i] += ml.mat[i];
 
 	return *this;
@@ -270,14 +270,14 @@ inline Matrix4D Matrix4D::operator+=(const Matrix4D& ml) {
 inline Matrix4D Matrix4D::operator-(const Matrix4D& ml) const {
 	Matrix4D m;
 
-	for(uint i=0;i<16;i++)
+	for(unsigned int i=0;i<16;i++)
 		m.mat[i] = mat[i]-ml.mat[i];
 
 	return m;
 }
 
 inline Matrix4D Matrix4D::operator-=(const Matrix4D& ml) {
-	for(uint i=0;i<16;i++)
+	for(unsigned int i=0;i<16;i++)
 		mat[i] -= ml.mat[i];
 
 	return *this;
@@ -332,7 +332,7 @@ inline Matrix4D Matrix4D::operator*=(const Matrix4D& ml) {
 	mt[14] = ml.mat[12]*mat[2] + ml.mat[13]*mat[6] + ml.mat[14]*mat[10] + ml.mat[15]*mat[14];
 	mt[15] = ml.mat[12]*mat[3] + ml.mat[13]*mat[7] + ml.mat[14]*mat[11] + ml.mat[15]*mat[15];
 
-	for(uint i=0;i<16;i++) mat[i] = mt[i];
+	for(unsigned int i=0;i<16;i++) mat[i] = mt[i];
 
 	return *this;
 }
@@ -345,7 +345,7 @@ inline Vector4D Matrix4D::operator*(const Vector4D& ml) const {
 }
 
 inline Matrix4D Matrix4D::operator=(const Matrix4D& src) {
-	for(uint i=0;i<16;i++) mat[i] = src.mat[i];
+	for(unsigned int i=0;i<16;i++) mat[i] = src.mat[i];
 	return *this;
 }
 

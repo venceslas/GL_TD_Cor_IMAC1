@@ -27,6 +27,10 @@
 
 #include "glad/glad.h"
 
+#ifndef M_PI
+#define M_PI 3.1415926535
+#endif
+
 /*
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -83,15 +87,21 @@ inline void checkGL(int line, const char *filename) {
   */
 class GLTools {
 public: 
-	static void takeSnapshot(int w,int h,unsigned char *image_data,uint nb_channel = 3);
+	static void takeSnapshot(int w,int h,unsigned char *image_data,unsigned int nb_channel = 3);
 };
 
-inline void GLTools::takeSnapshot(int w,int h,unsigned char *image_data,uint nb_channel) {
+inline void GLTools::takeSnapshot(int w,int h,unsigned char *image_data,unsigned int nb_channel) {
 	glPixelStorei(GL_PACK_ALIGNMENT,1);
 	if(nb_channel == 1) glReadPixels(0,0,(GLint)w,(GLint)h,GL_RED,GL_UNSIGNED_BYTE,image_data);
 	if(nb_channel == 3) glReadPixels(0,0,(GLint)w,(GLint)h,GL_RGB,GL_UNSIGNED_BYTE,image_data);
 	if(nb_channel == 4) glReadPixels(0,0,(GLint)w,(GLint)h,GL_RGBA,GL_UNSIGNED_BYTE,image_data);
 }
+
+// Utility function
+inline float deg2rad(float deg) {
+	return M_PI*deg/180.;
+}
+
 
 } // End namespace
 #endif

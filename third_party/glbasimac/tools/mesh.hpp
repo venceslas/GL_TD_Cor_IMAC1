@@ -43,13 +43,28 @@ namespace STP3D {
 		/// Standard construtor. Creates an empty mesh withouh any information.
 		StandardMesh(unsigned int elts = 0,unsigned int new_gl_type = GL_TRIANGLES) 
 			: nb_elts(elts),gl_type_mesh(new_gl_type),id_vao(0) {
-			/*buffers.clear();
+			buffers.clear();
 			size_one_elt.clear();
 			attr_id.clear();
 			attr_semantic.clear();
-			vbo_id.clear();*/
+			vbo_id.clear();
 		};
 		~StandardMesh();
+
+		/// Set the number of elements in each buffers
+		void setNbElt(unsigned int elts) {nb_elts = elts;};
+		void addOneBuffer(unsigned int id_attribute,unsigned int one_elt_size,
+		                  float* data,std::string semantic,bool copy=false);
+		void releaseCPUMemory();
+		void reInit();
+		/*****************************************************************
+		 *                      GL RELATED FUNCTIONS
+		 *****************************************************************/
+		void changeType(unsigned int new_gl_type) {gl_type_mesh = new_gl_type;};
+		bool createVAO();
+		unsigned int getIdVAO();
+		void draw() const;
+private:
 		//  User defined members
 		/// All the data in CPU buffers
 		std::vector<float*> buffers;
@@ -68,21 +83,10 @@ namespace STP3D {
 
 		//  GL defined members
 		/// Id of all VBO. Created by the GL API
-		std::vector<uint> vbo_id;
+		std::vector<unsigned int> vbo_id;
 		/// Id of the corresponding VAO
 		unsigned int id_vao;
 
-		/// Set the number of elements in each buffers
-		void setNbElt(unsigned int elts) {nb_elts = elts;};
-		void addOneBuffer(unsigned int id_attribute,unsigned int one_elt_size,
-		                  float* data,std::string semantic,bool copy=false);
-		void releaseCPUMemory();
-		/*****************************************************************
-		 *                      GL RELATED FUNCTIONS
-		 *****************************************************************/
-		void changeType(unsigned int new_gl_type) {gl_type_mesh = new_gl_type;};
-		bool createVAO();
-		void draw() const;
 	};
 
 	inline StandardMesh::~StandardMesh() {
@@ -112,18 +116,10 @@ namespace STP3D {
 			return false;
 		}
 
-		// Create all VBO (and check)
+		// Create all VBO (\TODO check every VBO is created)
 		vbo_id.resize(buffers.size());
 
 		glGenBuffers(buffers.size(),&(vbo_id[0]));
-		/*
-		for(uint i=0;i<buffers.size();++i) {
-			std::cerr<<"Creation d'un VBO indice = "<<new_id[i]<<std::endl;
-			if (new_id[i]==0) {STP3D::setError("Unable to find an empty VBO");return false;}
-			vbo_id[i]=new_id[i];
-		}
-		delete[](new_id);
-		*/
 
 		// Transfer all data for all VBO from CPU to GPU
 		for(std::vector<int>::size_type i = 0; i < buffers.size(); ++i) {
@@ -157,7 +153,6 @@ namespace STP3D {
 		}
 		attr_id.push_back(id_attribute);
 		size_one_elt.push_back(one_elt_size);
-		//std::cerr<<"Adding semantic :"<<semantic<<"!"<<std::endl;
 		attr_semantic.push_back(semantic);
 	}
 
@@ -169,6 +164,19 @@ namespace STP3D {
 		glBindVertexArray(0);
 	}
 
+	inline void StandardMesh::reInit() {
+ 		for(std::vector<int>::size_type i = 0; i < buffers.size(); ++i) {
+			if (copied[i]) delete[](buffers[i]);
+		}
+		buffers.clear();
+		copied.clear();
+ 		size_one_elt.clear();
+		attr_id.clear();
+		attr_semantic.clear();
+		glDeleteBuffers(vbo_id.size(),&(vbo_id[0]));
+		vbo_id.clear();
+		glDeleteVertexArrays(1,&id_vao);
+	}
 
 	inline void StandardMesh::releaseCPUMemory() {
 		for(std::vector<int>::size_type i = 0; i < buffers.size(); ++i) {

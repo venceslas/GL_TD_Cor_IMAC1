@@ -1,133 +1,123 @@
 #define GLFW_INCLUDE_NONE
-#define _USE_MATH_DEFINES
-
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-#include <GL/gl.h>
+#include "glbasimac/glbi_engine.hpp"
+#include "glbasimac/glbi_set_of_points.hpp"
+#include "tools/shaders.hpp"
 #include <iostream>
-#include <cmath>
+
+using namespace glbasimac;
+using namespace STP3D;
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH {800};
-static const unsigned int WINDOW_HEIGHT {600};
-static const char WINDOW_TITLE[] {"TD02 Ex03"};
-static float aspectRatio {1.0};
+static const unsigned int WINDOW_WIDTH = 800;
+static const unsigned int WINDOW_HEIGHT = 800;
+static const char WINDOW_TITLE[] = "TD02 Ex03";
+static float aspectRatio = 1.0f;
 
 /* Minimal time wanted between two images */
-static const double FRAMERATE_IN_SECONDS {1. / 30.};
+static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
 /* Virtual windows space */
-// Point are defined in interval -0.5 et 0.5 on x and y axes
-static const float GL_VIEW_SIZE {4.};
+static const float GL_VIEW_SIZE = 4.;
 
-/* Vertex structure */
-typedef struct vertex_2D {
-	float x;
-	float y;
-} Vertex2D;
-
-/* Scene flags */
-#define NB_SEG_CIRCLE 64
-static unsigned int is_full {0};
-static unsigned int type_obj {0}; // 0 frame, 1 square, 2 circle
+/* OpenGL Engine */
+GLBI_Engine myEngine;
+GLBI_Set_Of_Points thePoints;
 
 /* Error handling function */
 void onError(int error, const char* description) {
 	std::cout << "GLFW Error ("<<error<<") : " << description << std::endl;
 }
 
-void onWindowResized(GLFWwindow* /* window */, int width, int height)
+void onWindowResized(GLFWwindow* /*window*/, int width, int height)
 {
 	aspectRatio = width / (float) height;
 
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
 	if( aspectRatio > 1)
 	{
-		glOrtho(
-			-GL_VIEW_SIZE / 2. * aspectRatio, GL_VIEW_SIZE / 2. * aspectRatio,
-			-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.,
-			-1.0,1.0
-		);
+		myEngine.set2DProjection(-GL_VIEW_SIZE / 2. * aspectRatio, GL_VIEW_SIZE / 2. * aspectRatio,
+								 -GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.);
 	}
 	else
 	{
-		glOrtho(
-			-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.,
-			-GL_VIEW_SIZE / 2. / aspectRatio, GL_VIEW_SIZE / 2. / aspectRatio,
-			-1.0,1.0
-		);
+		myEngine.set2DProjection(-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.,
+								 -GL_VIEW_SIZE / 2. / aspectRatio, GL_VIEW_SIZE / 2. / aspectRatio);
 	}
-	glMatrixMode(GL_MODELVIEW);
 }
 
-void onKey(GLFWwindow* window, int key, int /* scancode */, int action, int /* mods */)
+void onKey(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
 {
-	if (action == GLFW_PRESS) {
-		switch(key) {
-			case GLFW_KEY_A :
-			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE); 
-				break;
-			case GLFW_KEY_O : 
-				type_obj = (type_obj+1)%3;
-				std::cout<<"Forme "<<type_obj<<std::endl;
-				break;
-			case GLFW_KEY_F : 
-				is_full = 1-is_full;
-				break;
-			default: std::cout<<"Touche non gérée "<<std::endl;
-		}
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+		thePoints.changeNature(GL_LINE_STRIP);
+	}
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+		thePoints.changeNature(GL_POINTS);
+	}
+	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+		thePoints.changeNature(GL_LINE_LOOP);
+	}
+	if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+		thePoints.changeNature(GL_TRIANGLES);
 	}
 }
 
-void onMouseButton(GLFWwindow* window, int button, int action, int /* mods */)
+void onMouseButton(GLFWwindow* window, int button, int action, int /*mods*/)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		std::cout<<"Pressed in "<<xpos<<" "<<ypos<<std::endl;
+
 		int s_w,s_h;
 		glfwGetWindowSize(window,&s_w,&s_h);
+		std::vector<float> coord;
+		std::vector<float> color;
+		/* 
+		CONSIGNE TD : les deux équations ci-dessous à éventuellement donner en TD si les étudiants galèrent trop
+		(-1 + 2. * pos_button.x / (float) width_window) * (GL_VIEW_SIZE / 2)
+		( 1 - 2. * pos_button.y / (float) height_window) * (GL_VIEW_SIZE / 2)
+		*/
+		if (aspectRatio>1.0) {
+			coord.push_back( (-1 + 2. * xpos / (float) s_w) * aspectRatio * (GL_VIEW_SIZE / 2) );
+			coord.push_back( (1 - 2. * ypos / (float) s_h) * (GL_VIEW_SIZE / 2) );
+		}
+		else {
+			coord.push_back( (-1 + 2. * xpos / (float) s_w) * (GL_VIEW_SIZE / 2) );
+			coord.push_back( (1 - 2. * ypos / (float) s_h) * (GL_VIEW_SIZE / 2) / aspectRatio );
+		}
+		color.push_back(0.5+0.5*xpos/(float)s_w);
+		color.push_back(0.5+0.5*ypos/(float)s_h);
+		color.push_back(0.0);
+		thePoints.addAPoint(coord.data(),color.data());
 	}
 }
 
-void drawOrigin() {
-	glBegin(GL_LINES);
-		glColor3f(1.0,0.0,0.0);
-		glVertex2f(0.0,0.0);
-		glVertex2f(1.0,0.0);
-		glColor3f(0.0,1.0,0.0);
-		glVertex2f(0.0,0.0);
-		glVertex2f(0.0,1.0);
-	glEnd();
+
+void initScene() {
+	std::vector<float> points {0.0,0.0};
+	std::vector<float> col{1.0,1.0,1.0};
+	thePoints.initSet(points,col);
+
+	// Exercice Optionnel 03
+	/*
+	std::vector<float> points {0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0};
+	std::vector<float> col{1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0};
+	thePoints.initSet(points,col);
+	thePoints.changeNature(GL_LINES);
+	*/
 }
 
-void drawSquare() {
-	glColor3f(1.0,1.0,1.0);
-	if (is_full) glBegin(GL_TRIANGLE_FAN);
-	else glBegin(GL_LINE_LOOP);
-		glVertex2f(-0.5,-0.5);
-		glVertex2f(0.5,-0.5);
-		glVertex2f(0.5,0.5);
-		glVertex2f(-0.5,0.5);
-	glEnd();
+void renderScene() {
+	glPointSize(4.0);
+	thePoints.drawSet();
 }
 
-void drawCircle() {
-	glColor3f(1.0,1.0,0.0);
-	if (is_full) glBegin(GL_TRIANGLE_FAN);
-	else glBegin(GL_LINE_LOOP);
-		float step_rad = 2*M_PI/(float)NB_SEG_CIRCLE;
-		for(int i=0;i<NB_SEG_CIRCLE;i++) {
-			glVertex2f(cos(i*step_rad),sin(i*step_rad));
-		}
-	glEnd();
-}
-
-int main(int /* argc */, char** /* argv */) 
+int main(int /*argc*/, char** /*argv*/)
 {
 	/* GLFW initialisation */
 	GLFWwindow* window;
@@ -148,6 +138,7 @@ int main(int /* argc */, char** /* argv */)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
+	std::cout<<"Loading GL extension"<<std::endl;
 	// Intialize glad (loads the OpenGL functions)
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		return -1;
@@ -157,9 +148,13 @@ int main(int /* argc */, char** /* argv */)
 	glfwSetKeyCallback(window, onKey);
 	glfwSetMouseButtonCallback(window, onMouseButton);
 
-	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	glPointSize(4.0);
+	std::cout<<"Engine init"<<std::endl;
+	myEngine.initGL();
+	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
+	CHECK_GL;
+
+	initScene();
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -168,15 +163,10 @@ int main(int /* argc */, char** /* argv */)
 		double startTime = glfwGetTime();
 
 		/* Render here */
+		glClearColor(0.2f,0.0,0.0,0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glColor3f(1.0,0.0,1.0);
-		switch(type_obj) {
-			case 0 : drawOrigin(); break;
-			case 1 : drawSquare(); break;
-			case 2 : drawCircle(); break;
-			default : std::cout<<"Wrong type of object "<<std::endl;
-		}
+		renderScene();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -187,7 +177,7 @@ int main(int /* argc */, char** /* argv */)
 		/* Elapsed time computation from loop begining */
 		double elapsedTime = glfwGetTime() - startTime;
 		/* If to few time is spend vs our wanted FPS, we wait */
-		if(elapsedTime < FRAMERATE_IN_SECONDS) 
+		if(elapsedTime < FRAMERATE_IN_SECONDS)
 		{
 			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS-elapsedTime);
 		}

@@ -160,7 +160,7 @@ namespace STP3D {
 		}
 
 		// Compile all shaders
-		for(uint i=0;i<shaderTypes.size();i++) {
+		for(unsigned int i=0;i<shaderTypes.size();i++) {
 			if (!compileShader(filenames[i], shaderTypes[i], programObject, v)) {
 				if(v) std::cout << "Shader will not be used" << std::endl;
 				return 0;

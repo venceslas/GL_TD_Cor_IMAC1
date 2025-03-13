@@ -19,7 +19,7 @@ static float aspectRatio = 1.0f;
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
 /* Virtual windows space */
-static const float GL_VIEW_SIZE = 1.;
+static const float GL_VIEW_SIZE = 2.;
 
 /* OpenGL Engine */
 GLBI_Engine myEngine;
@@ -52,19 +52,6 @@ void onKey(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods
 	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
-}
-
-void initScene() {
-	glPointSize(4.0);
-
-	// Declare the points
-	thePoints.initSet();
-
-	thePoints.addAPoint(0.2,0.2,0.0,0.0,0.0);
-}
-
-void drawScene() {
-	thePoints.drawSet();
 }
 
 int main(int /*argc*/, char** /*argv*/)
@@ -102,7 +89,26 @@ int main(int /*argc*/, char** /*argv*/)
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 	CHECK_GL;
 
-	initScene();
+	/* INITIALISATION PART */
+	// 01
+	// std::vector<float> points {0.0,0.0};
+	// thePoints.initSet(points,1.0,1.0,1.0);
+	// 03
+	// std::vector<float> points {0.0,0.0,
+	// 						   0.5,0.0,
+	// 						   0.0,0.5,
+	// 						   -0.5,-0.5};
+	// thePoints.initSet(points,1.0,1.0,1.0);
+	// 04
+	std::vector<float> points {0.0,0.0,
+							   0.5,0.0,
+							   0.0,0.5,
+							   -0.5,-0.5};
+	std::vector<float> col{1.0,1.0,1.0,
+						   1.0,0.0,0.0,
+						   0.0,1.0,0.0,
+						   1.0,0.0,1.0};
+	thePoints.initSet(points,col);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -111,10 +117,13 @@ int main(int /*argc*/, char** /*argv*/)
 		double startTime = glfwGetTime();
 
 		/* Render here */
-		glClearColor(0.2f,0.0,0.0,0.0);
+		glClearColor(0.2f,0.0f,0.0f,0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		drawScene();
+		/* RENDERING PART */
+		// 02
+		glPointSize(4.0);
+		thePoints.drawSet();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

@@ -49,7 +49,7 @@ namespace STP3D {
 		map_mesh standard_meshes;
 
 		/// Get the total number of meshes
-		uint getNbMeshes() {return indexed_meshes.size()+standard_meshes.size();}
+		unsigned int getNbMeshes() {return indexed_meshes.size()+standard_meshes.size();}
 		/** Add an indexed mesh to the manager.
 		  * \param name the id/name of the mesh. Must be unique for each particular mesh
 		  * \param addedMesh the mesh to be added

@@ -66,7 +66,7 @@ namespace STP3D {
 		void addTranslation(const Vector3D& trans);
 		/// Compose top level matrix with a new rotation
 		void addRotation(float angle,const Vector3D& axe);
-		/// Compose top level matrix with a new homothety
+		/// Compose top level matrix with a new homothety (same on 3 axes)
 		void addHomothety(float scale);
 		/// Compose top level matrix with a new homothety varying on the 3 axis
 		void addHomothety(const Vector3D& scale);

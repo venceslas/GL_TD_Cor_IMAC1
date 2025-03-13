@@ -2,7 +2,6 @@
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 #include "glbasimac/glbi_engine.hpp"
-#include <GL/gl.h>
 #include <iostream>
 
 using namespace glbasimac;
@@ -13,7 +12,7 @@ using namespace glbasimac;
 /* Window size */
 static const unsigned int WINDOW_WIDTH = 800;
 static const unsigned int WINDOW_HEIGHT = 600;
-static float aspectRatio = 1.0f;
+static float aspectRatio {1.0f};
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
@@ -182,9 +181,10 @@ int main(int /*argc*/, char** /*argv*/)
 		/* Elapsed time computation from loop begining */
 		double elapsedTime = glfwGetTime() - startTime;
 		/* If to few time is spend vs our wanted FPS, we wait */
-		if(elapsedTime < FRAMERATE_IN_SECONDS) 
+		while(elapsedTime < FRAMERATE_IN_SECONDS) 
 		{
 			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS-elapsedTime);
+			elapsedTime = glfwGetTime() - startTime;
 		}
 	}
 

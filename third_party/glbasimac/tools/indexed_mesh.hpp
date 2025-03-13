@@ -36,7 +36,7 @@ namespace STP3D {
 	class IndexedMesh {
 	public:
 		/// Standard construtor. Creates an empty mesh withouh any information.
-		IndexedMesh(uint n_prim = 0,uint elts = 0,uint new_gl_type = GL_TRIANGLES) : id_vao(0) {
+		IndexedMesh(unsigned int n_prim = 0,unsigned int elts = 0,unsigned int new_gl_type = GL_TRIANGLES) : id_vao(0) {
 			buffers.clear();
 			size_one_elt.clear();
 			attr_id.clear();
@@ -47,7 +47,7 @@ namespace STP3D {
 			index_buffer = NULL;
 			nb_idx_per_primitive = getNbIdxPerPrimitive();
 			if (nb_primitive>0) {
-				index_buffer = new uint[nb_primitive*nb_idx_per_primitive];
+				index_buffer = new unsigned int[nb_primitive*nb_idx_per_primitive];
 			}
 			nb_elts = elts;
 			id_index = 0;
@@ -56,47 +56,47 @@ namespace STP3D {
 		
 		//  User defined members
 		/// The index buffer
-		uint* index_buffer;
+		unsigned int* index_buffer;
 		/// The number of primitive buffer
-		uint nb_primitive;
+		unsigned int nb_primitive;
 		/// The id of index buffer
-		uint id_index;
+		unsigned int id_index;
 		/// All the data in CPU buffers
 		std::vector<float*> buffers;
 		/// Number of elements (vertex) in each buffer : must be common !!
-		uint nb_elts;
+		unsigned int nb_elts;
 		/// Size of one element in each buffer
-		std::vector<uint> size_one_elt;
+		std::vector<unsigned int> size_one_elt;
 		/// Attribute id corresponding to each buffer
-		std::vector<uint> attr_id;
+		std::vector<unsigned int> attr_id;
 		/// Attribute semantic corresponding to each buffer
 		std::vector<std::string> attr_semantic;
 		/// Attribute semantic corresponding to each buffer
-		uint gl_type_mesh;
+		unsigned int gl_type_mesh;
 
 		//  GL defined members
 		/// Id of all VBO. Created by the GL API
-		std::vector<uint> vbo_id;
+		std::vector<unsigned int> vbo_id;
 		/// Id of the corresponding VAO
-		uint id_vao;
+		unsigned int id_vao;
 
 		/// Set the number of elements in each buffers
-		void setNbElt(uint elts) {nb_elts = elts;};
-		void setNbIndex(uint idx) {nb_primitive = idx;if (index_buffer) delete[](index_buffer);};
-		void addIndexBuffer(uint* data,bool copy = false);
-		void addOneBuffer(uint id_attribute,uint one_elt_size,
+		void setNbElt(unsigned int elts) {nb_elts = elts;};
+		void setNbIndex(unsigned int idx) {nb_primitive = idx;if (index_buffer) delete[](index_buffer);};
+		void addIndexBuffer(unsigned int* data,bool copy = false);
+		void addOneBuffer(unsigned int id_attribute,unsigned int one_elt_size,
 		                  float* data,std::string semantic="",bool copy=false);
 		void releaseCPUMemory();
 		/*****************************************************************
 		 *                      GL RELATED FUNCTIONS
 		 *****************************************************************/
-		void changeType(uint new_gl_type) {gl_type_mesh = new_gl_type;};
+		void changeType(unsigned int new_gl_type) {gl_type_mesh = new_gl_type;};
 		bool createVAO();
 		void draw();
 
 	private:
-		uint nb_idx_per_primitive;
-		uint getNbIdxPerPrimitive();
+		unsigned int nb_idx_per_primitive;
+		unsigned int getNbIdxPerPrimitive();
 
 	};
 
@@ -109,7 +109,7 @@ namespace STP3D {
 		if (index_buffer) delete[](index_buffer);
 	}
 
-	inline uint IndexedMesh::getNbIdxPerPrimitive() {
+	inline unsigned int IndexedMesh::getNbIdxPerPrimitive() {
 		if(gl_type_mesh == GL_POINTS) return 1;
 		if(gl_type_mesh == GL_LINES) return 2;
 		if(gl_type_mesh == GL_TRIANGLES) return 3;
@@ -134,9 +134,9 @@ namespace STP3D {
 
 		// Create all VBO (and check)
 		vbo_id.resize(buffers.size());
-		uint* new_id = new uint[buffers.size()];
+		unsigned int* new_id = new unsigned int[buffers.size()];
 		glGenBuffers(buffers.size(),new_id);
-		for(uint i=0;i<buffers.size();++i) {
+		for(unsigned int i=0;i<buffers.size();++i) {
 			if (new_id[i]==0) {STP3D::setError("Unable to find an empty VBO");return false;}
 			vbo_id[i]=new_id[i];
 		}
@@ -161,16 +161,16 @@ namespace STP3D {
 		}
 		// Transfer index data VBO from CPU to GPU
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id_index);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,nb_idx_per_primitive*nb_primitive*sizeof(uint),index_buffer,GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,nb_idx_per_primitive*nb_primitive*sizeof(unsigned int),index_buffer,GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 
 		glBindVertexArray(0);
 		return true;
 	}
 
-	inline void IndexedMesh::addIndexBuffer(uint* data,bool copy) {
+	inline void IndexedMesh::addIndexBuffer(unsigned int* data,bool copy) {
 		if (copy) {
-			memcpy(index_buffer,data,nb_idx_per_primitive*nb_primitive*sizeof(uint));
+			memcpy(index_buffer,data,nb_idx_per_primitive*nb_primitive*sizeof(unsigned int));
 		}
 		else {
 			if (index_buffer) delete[](index_buffer);
@@ -178,7 +178,7 @@ namespace STP3D {
 		}
 	}
 
-	inline void IndexedMesh::addOneBuffer(uint id_attribute,uint one_elt_size,
+	inline void IndexedMesh::addOneBuffer(unsigned int id_attribute,unsigned int one_elt_size,
 	                                       float* data,std::string semantic,bool copy) {
 		if (copy) {
 			float* tab = new float[one_elt_size*nb_elts];

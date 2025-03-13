@@ -74,11 +74,11 @@ namespace STP3D {
 		Texture2D(int type,size_t w,size_t h,bool reserve=true);
 		~Texture2D() {if(tabRVB) delete[](tabRVB); tabRVB = NULL;};
 
-		uint gl_id_tex;		///< OpenGL id binding
+		unsigned int gl_id_tex;		///< OpenGL id binding
 		size_t tex_w;		///< Texture width (width)
 		size_t tex_h;		///< Texture height (height)
 		int typetext;		///< Texture type
-		uint last_tex_unit;	///< Last texture unit binding used
+		unsigned int last_tex_unit;	///< Last texture unit binding used
 
 		unsigned char* getTab() const {return tabRVB;};
 
@@ -321,7 +321,7 @@ namespace STP3D {
 
 		//f.getline(tamp,50,'\n');
 		t = fscanf(f,"%s",tamp);
-		for (uint i=0;i<50;i++) if (tamp[i]==' ') {tamp[i] = '\0';}
+		for (unsigned int i=0;i<50;i++) if (tamp[i]==' ') {tamp[i] = '\0';}
 
 		if (strcmp(tamp,"P6") && strcmp(tamp,"P5")) {
 			STP3D::setError("[Texture : readPPM] File seems not to be a .ppm. Header is "+std::string(tamp)+"("+intToString(t)+")");
@@ -355,7 +355,7 @@ namespace STP3D {
 				STP3D::setError("[Texture : readPPM] Unable to allocate memory (memory full ?)");
 				return false;
 			}
-			for(uint i=0;i<tex_h;i++) {
+			for(unsigned int i=0;i<tex_h;i++) {
 				t = fread(tabRVB+(tex_h-i-1)*tex_w,sizeof(unsigned char),tex_w,f);
 			}
 		}
@@ -365,7 +365,7 @@ namespace STP3D {
 				STP3D::setError("[Texture : readPPM] Unable to allocate memory (memory full ?)");
 				return false;
 			}
-			for(uint i=0;i<tex_h;i++) {
+			for(unsigned int i=0;i<tex_h;i++) {
 				t = fread(tabRVB+(tex_h-i-1)*3*tex_w,sizeof(unsigned char),tex_w*3,f);
 			}	
 		}
@@ -430,7 +430,7 @@ namespace STP3D {
 	}
 
 	inline bool Texture2D::readTGANoCompress(FILE *file,int d) {
-		uint iswap;	
+		unsigned int iswap;	
 		unsigned char cswap;	
 		int nbpixel = 3;
 

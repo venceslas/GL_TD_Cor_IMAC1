@@ -1,15 +1,14 @@
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-#include "glbasimac/glbi_engine.hpp"
-#include <GL/gl.h>
+#include "glbasimac/glbi_engine.hpp" 
 #include <iostream>
 
 using namespace glbasimac;
 
 /* Minimal time wanted between two images */
-static const double FRAMERATE_IN_SECONDS = 1. / 30.;
-static float aspectRatio = 1.0f;
+static const double FRAMERATE_IN_SECONDS {1. / 30.};
+static float aspectRatio {1.0f};
 
 /* OpenGL Engine */
 GLBI_Engine myEngine;
@@ -77,6 +76,7 @@ int main() {
 		if(elapsedTime < FRAMERATE_IN_SECONDS)
 		{
 			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS-elapsedTime);
+			elapsedTime = glfwGetTime() - startTime;
 		}
 	}
 

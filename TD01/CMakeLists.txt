@@ -23,6 +23,16 @@ foreach(EXE_SRC_FILE ${EXE_SRC_FILES})
 	else()
 		target_compile_options(${OUTPUT} PRIVATE -Wall -Wextra)
 	endif()
+	set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+	# set(CMAKE_MAKE_PROGRAM_ARGS --output-sync=target)
+	# Activer les couleurs pour GCC et Clang
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		target_compile_options(${OUTPUT} PRIVATE -fdiagnostics-color=always)
+	endif()
+	if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    	set(CMAKE_MAKE_PROGRAM_MAKE_FLAGS "--output-sync=target")
+	endif()
 endforeach()
 
 #file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
