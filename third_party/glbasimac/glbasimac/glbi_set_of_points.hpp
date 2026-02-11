@@ -23,8 +23,8 @@ struct GLBI_Set_Of_Points {
 	};
 
 	// Initialize the set of points to render
-	void initSet(const std::vector<float> in_coord,float c_r,float c_v,float c_b);
-	void initSet(const std::vector<float> in_coord,const std::vector<float> in_color);
+	void initSet(std::vector<float> in_coord,float c_r,float c_v,float c_b);
+	void initSet(std::vector<float> in_coord,std::vector<float> in_color);
 
 	// Allow to add a point. Not an efficient way for rendering...
 	void addAPoint(float* new_coord,float* new_color);

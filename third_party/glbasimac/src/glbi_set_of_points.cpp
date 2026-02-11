@@ -3,7 +3,7 @@
 
 namespace glbasimac {
 
-	void GLBI_Set_Of_Points::initSet(const std::vector<float> in_coord,float c_r,float c_v,float c_b) {
+	void GLBI_Set_Of_Points::initSet(std::vector<float> in_coord,float c_r,float c_v,float c_b) {
 		coord_pts.clear();
 		color_pts.clear();
 		if (dimension == 2) {
@@ -18,7 +18,7 @@ namespace glbasimac {
 		}
 
 		pts.setNbElt(nb_pts);
-		coord_pts = in_coord;
+		coord_pts = std::move(in_coord);
 		pts.addOneBuffer(0,dimension,coord_pts.data(),"Coordinates",false);
 
 		for(size_t i{0};i<in_coord.size()/dimension;i++) {
@@ -35,7 +35,7 @@ namespace glbasimac {
 		}
 	}
 
-	void GLBI_Set_Of_Points::initSet(const std::vector<float> in_coord,const std::vector<float> in_color) {
+	void GLBI_Set_Of_Points::initSet(std::vector<float> in_coord,std::vector<float> in_color) {
 		coord_pts.clear();
 		color_pts.clear();
 		if (dimension == 2) {
@@ -50,10 +50,10 @@ namespace glbasimac {
 		}
 		pts.setNbElt(nb_pts);
 
-		coord_pts = in_coord;
+		coord_pts = std::move(in_coord);
 		pts.addOneBuffer(0,dimension,coord_pts.data(),"Coordinates",false);
 
-		color_pts = in_color;
+		color_pts = std::move(in_color);
 		pts.addOneBuffer(3,3,color_pts.data(),"Color",false);
 
 		if(!pts.createVAO()) {
