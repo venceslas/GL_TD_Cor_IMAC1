@@ -22,8 +22,6 @@ struct GLBI_Convex_2D_Shape {
 
 	void initShape(const std::vector<float> in_coord);
 
-	void initShape(const std::vector<float> in_coord,const std::vector<float> in_nrml);
-
 	void changeNature(unsigned int new_gl_type);
 
 	void drawShape();

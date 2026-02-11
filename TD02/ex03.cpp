@@ -24,6 +24,7 @@ static const float GL_VIEW_SIZE = 4.;
 /* OpenGL Engine */
 GLBI_Engine myEngine;
 GLBI_Set_Of_Points thePoints;
+GLBI_Set_Of_Points repere;
 
 /* Error handling function */
 void onError(int error, const char* description) {
@@ -104,17 +105,17 @@ void initScene() {
 	thePoints.initSet(points,col);
 
 	// Exercice Optionnel 03
-	/*
-	std::vector<float> points {0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0};
-	std::vector<float> col{1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0};
-	thePoints.initSet(points,col);
-	thePoints.changeNature(GL_LINES);
-	*/
+	std::vector<float> r_points {0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0};
+	std::vector<float> r_col{1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0};
+	repere.initSet(r_points,r_col);
+	repere.changeNature(GL_LINES);
 }
 
 void renderScene() {
 	glPointSize(4.0);
 	thePoints.drawSet();
+
+	repere.drawSet();
 }
 
 int main(int /*argc*/, char** /*argv*/)

@@ -3,8 +3,9 @@
 #include "glad/glad.h"
 #include "glbasimac/glbi_engine.hpp"
 #include "glbasimac/glbi_texture.hpp"
-#include "draw_scene.hpp"
 #include "tools/shaders.hpp"
+#include "tools/basic_mesh.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "tools/stb_image.h"
 #include <iostream>
@@ -21,9 +22,20 @@ static float aspectRatio = 1.0f;
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
+/* Camera parameters and functions */
+static const float Z_NEAR {0.1f};
+static const float Z_FAR {500.f};
+float angle_theta {45.0};    // Angle between x axis and viewpoint
+float angle_phy   {30.0};      // Angle between z axis and viewpoint
+float dist_zoom   {30.0};      // Distance between origin and viewpoint
+
+/* OpenGL Engine */
+GLBI_Engine myBasicEngine;
+
 /* 3D Engine global variables */
 StandardMesh* rectangle;
 StandardMesh* a_frame;
+IndexedMesh* a_sphere;
 GLuint id_texture {0};
 GLBI_Texture myTexture;
 
@@ -38,7 +50,7 @@ void onWindowResized(GLFWwindow* /*window*/, int width, int height)
 
 	glViewport(0, 0, width, height);
 	std::cerr<<"Setting 3D projection"<<std::endl;
-	myEngine.set3DProjection(60.0,aspectRatio,Z_NEAR,Z_FAR);
+	myBasicEngine.set3DProjection(60.0,aspectRatio,Z_NEAR,Z_FAR);
 }
 
 void onKey(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
@@ -87,15 +99,18 @@ void onMouseButton(GLFWwindow* window, int button, int action, int /*mods*/)
 
 	}
 }
+
 void initBasicScene() {
 	rectangle = basicRect(10.0,10.0);
 	rectangle->createVAO();
 	a_frame = createRepere(10.0);
 	a_frame->createVAO();
+	a_sphere = basicSphere(5.0);
+	a_sphere->createVAO();
 
 	int w{0},h{0};
 	int canal{0};
-	unsigned char* img = stbi_load("../assets/textures/triforce.jpg",&w,&h,&canal,0);
+	unsigned char* img = stbi_load("../assets/textures/tri_force_2.png",&w,&h,&canal,0);
 	std::cout<<"Loading of image with size "<<w<<" / "<<h<<" : "<<canal<<std::endl;
 	if(img == NULL) {
 		std::cerr<<"Unable to read"<<std::endl;
@@ -115,16 +130,21 @@ void initBasicScene() {
 	std::cerr<<"Id of texture : "<<myTexture.id_in_GL<<std::endl;
 
 	stbi_image_free(img);
+
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 }
 
 void renderBasicScene() {
 	a_frame->draw();
-	myEngine.activateTexturing(true);
-	myEngine.setFlatColor(1.0,0.0,0.0);
+	myBasicEngine.activateTexturing(true);
+	myBasicEngine.setFlatColor(1.0,0.0,0.0);
 	myTexture.attachTexture();
 	rectangle->draw();
 	myTexture.detachTexture();
-	myEngine.activateTexturing(false);
+	myBasicEngine.activateTexturing(false);
 }
 
 int main(int /*argc*/, char** /*argv*/)
@@ -159,8 +179,8 @@ int main(int /*argc*/, char** /*argv*/)
 	glfwSetMouseButtonCallback(window, onMouseButton);
 
 	std::cout<<"Engine init"<<std::endl;
-	myEngine.mode2D = false; // Set engine to 3D mode
-	myEngine.initGL();
+	myBasicEngine.mode2D = false; // Set engine to 3D mode
+	myBasicEngine.initGL();
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 	CHECK_GL;
 
@@ -176,10 +196,10 @@ int main(int /*argc*/, char** /*argv*/)
 		glClearColor(0.f,0.0f,0.2f,0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 		
 		/* Fix camera position */
-		myEngine.mvMatrixStack.loadIdentity();
+		myBasicEngine.mvMatrixStack.loadIdentity();
 
 		Vector3D pos_camera = Vector3D(dist_zoom*cos(deg2rad(angle_theta))*cos(deg2rad(angle_phy)),
 										dist_zoom*sin(deg2rad(angle_theta))*cos(deg2rad(angle_phy)),
@@ -187,8 +207,8 @@ int main(int /*argc*/, char** /*argv*/)
 		Vector3D viewed_point = Vector3D(0.0,0.0,0.0);
 		Vector3D up_vector = Vector3D(0.0,0.0,1.0); // DO NOT TOUCH IT
 		Matrix4D viewMatrix = Matrix4D::lookAt(pos_camera,viewed_point,up_vector);
-		myEngine.setViewMatrix(viewMatrix);
-		myEngine.updateMvMatrix();
+		myBasicEngine.setViewMatrix(viewMatrix);
+		myBasicEngine.updateMvMatrix();
 
 		renderBasicScene();
 

@@ -35,16 +35,27 @@ vec4 lambert(int idLight) {
 	
 	// Computing vector PL and setting lambert term
 	vec3 dir_illu;
+	vec3 dir_illu_nml;
+	float spot_att = 1.0;
 	if (lightPos[idLight].w > 0.0) {
 		vec3 ptlight = vec3(viewMatrix*vec4(lightPos[idLight].xyz,1.0f));
 		dir_illu = ptlight - pos;
+		dir_illu_nml = normalize(dir_illu);
+		// Gestion spot light
+		if (lightAngle[idLight] > 0.0) {
+			float cutoff = cos(lightAngle[idLight]);
+			float theta = dot(normalize(vec3(viewMatrix*vec4(lightDirCone[idLight].xyz,0.0f))), -dir_illu_nml);
+			if (theta <= 0.0) spot_att = 0.0;
+			else spot_att = pow(max(theta - cutoff, 0.0) / (1.0 - cutoff), 1);
+		}
 	}
 	else {
 		dir_illu = vec3(viewMatrix*lightPos[idLight]);
+		dir_illu_nml = normalize(dir_illu);
 	}
 
 	float dist = length(dir_illu);
-	vec3 dir_illu_nml = normalize(dir_illu);
+
 	float cos_illu = saturate(dot(dir_illu_nml,nml_cam));
 
 	vec3 L = lightIntensity[idLight];
@@ -55,6 +66,7 @@ vec4 lambert(int idLight) {
 	else {
 		attenuation = attenuationFactor.x;
 	}
+	attenuation *= spot_att;
 	
 	// Shininess
 	vec3 view_dir = normalize(-pos);
@@ -73,7 +85,7 @@ vec4 lambert(int idLight) {
 		c_dif = vec4(color,1.0f);
 	}
 	//return vec4(c_dif.rgb*(L*attenuation)*cos_illu,1.);
-	return vec4(c_dif.rgb*(L*attenuation)*cos_illu+ spec_intensity*(L*attenuation)*c_spec,1.0);
+	return c_dif*vec4(L,1.0f)*attenuation*cos_illu + vec4(spec_intensity*(L*attenuation)*c_spec,1.0f);
 }
 
 void main()

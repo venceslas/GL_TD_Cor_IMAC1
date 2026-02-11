@@ -83,13 +83,8 @@ namespace glbasimac {
 	void GLBI_Engine::activateTexturing(bool use_texture) {
 		useTexture = use_texture;
 		glActiveTexture(GL_TEXTURE0);
-		if (!mode2D) {
-			glUniform1i(glGetUniformLocation(idShader[currentShader],"tex0"),0);
-			glUniform1i(glGetUniformLocation(idShader[currentShader],"use_texture"),useTexture);
-		}
-		else {
-			std::cerr<<"Unable to use texturing in 2D mode"<<std::endl;
-		}
+		glUniform1i(glGetUniformLocation(idShader[currentShader],"tex0"),0);
+		glUniform1i(glGetUniformLocation(idShader[currentShader],"use_texture"),useTexture);
 	}
 
 	void GLBI_Engine::switchToFlatShading() {
@@ -126,7 +121,6 @@ namespace glbasimac {
 		else {
 			if (num_light<numberOfLight) {
 				lightIntensity[num_light] = light_intensity;
-				std::cerr<<"ICI "<<numberOfLight<<std::endl;
 				glUniform3fv(glGetUniformLocation(idShader[currentShader],"lightIntensity"),numberOfLight,&(lightIntensity[0][0]));
 			}
 		}
@@ -134,6 +128,22 @@ namespace glbasimac {
 
     void GLBI_Engine::setConeLight(const Vector3D &light_direction, const float angle, int num_light)
     {
+		if (mode2D || currentShader == 0) {
+			std::cerr<<"Unable to set cone light in 2D mode or in Flat shading"<<std::endl;
+		}
+		else {
+			if (num_light<numberOfLight) {
+				if (lightPos[num_light].w > 0.0) {
+					lightDirSpot[num_light] = light_direction;
+					lightAngle[num_light] = angle;
+					glUniform3fv(glGetUniformLocation(idShader[currentShader],"lightDirCone"),numberOfLight,&(lightDirSpot[0][0]));
+					glUniform1fv(glGetUniformLocation(idShader[currentShader],"lightAngle"),numberOfLight,&(lightAngle[0]));	
+				}
+				else {
+					std::cerr<<"Unable to set cone light for a directional light !"<<std::endl;
+				}
+			}
+		}
     }
 
     void GLBI_Engine::setNormalForConvex2DShape(const Vector3D &nml)

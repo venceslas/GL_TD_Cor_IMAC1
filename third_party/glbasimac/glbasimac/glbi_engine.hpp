@@ -11,11 +11,11 @@ using namespace STP3D;
 namespace glbasimac {
 
 struct GLBI_Engine {
-	GLBI_Engine():mode2D(true),useTexture(0),currentShader(0),attFactors({1.0,0.0,1.0}),numberOfLight(1) {
+	GLBI_Engine():mode2D(true),useTexture(0),currentShader(0),numberOfLight(1),attFactors({1.0,0.0,1.0}) {
 		lightPos.push_back({0.0,0.0,0.0,0.0});
 		lightIntensity.push_back({0.0,0.0,0.0});
-		lightAngle.push_back(0.0);
 		lightDirSpot.push_back({0.0,0.0,0.0});
+		lightAngle.push_back(0.0);
 	}
 
 	~GLBI_Engine() {}
