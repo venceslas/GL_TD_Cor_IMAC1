@@ -69,6 +69,16 @@ namespace glbasimac {
 		}
 	}
 
+	void GLBI_Engine::set3DProjection(Matrix4D& projMat) {
+		glUseProgram(idShader[0]);
+		glUniformMatrix4fv(glGetUniformLocation(idShader[0],"projectionMat"),1,GL_FALSE,projMat);
+		if (!mode2D) {
+			glUseProgram(idShader[1]);
+			glUniformMatrix4fv(glGetUniformLocation(idShader[1],"projectionMat"),1,GL_FALSE,projMat);
+			glUseProgram(idShader[currentShader]);
+		}
+	}
+
 	void GLBI_Engine::setViewMatrix(const Matrix4D& mat) {
 		viewMatrix = mat;
 		// Mettre le uniform dans le shader correspondant.

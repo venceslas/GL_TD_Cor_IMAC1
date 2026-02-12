@@ -26,6 +26,8 @@ struct GLBI_Engine {
 	void set2DProjection(float xmin,float xmax,float ymin,float ymax);
 	/// Set 3D perspective projection with a \param fov and \param z_near / \param \z_far depth range
 	void set3DProjection(float fov,float ratio,float z_near,float z_far);
+	/// Set 3D perspective projection directly with a projection matrix \param projMat
+	void set3DProjection(Matrix4D& projMat);
 	/// Set the current flat color to r,g,b. This color will remains until changed
 	void setFlatColor(float r,float g,float b);
 	/// Set the current flat color to r,g,b. This color will remains until changed
