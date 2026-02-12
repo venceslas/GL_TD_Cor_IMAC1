@@ -130,7 +130,7 @@ private:
 
 			glEnableVertexAttribArray(attr_id[i]);
 
-			glVertexAttribPointer(attr_id[i], size_one_elt[i], GL_FLOAT, GL_FALSE, 0, 0);
+			glVertexAttribPointer(attr_id[i], size_one_elt[i], GL_FLOAT, GL_FALSE, size_one_elt[i]*sizeof(GLfloat), 0);
 
 			glBindBuffer(GL_ARRAY_BUFFER,0);
 		}

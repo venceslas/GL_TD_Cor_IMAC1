@@ -155,7 +155,7 @@ namespace STP3D {
 
 			glBufferData(GL_ARRAY_BUFFER,nb_elts*size_one_elt[i]*sizeof(GLfloat),buffers[i],GL_STATIC_DRAW);
 
-			glVertexAttribPointer(attr_id[i], size_one_elt[i], GL_FLOAT, GL_FALSE, 0, 0);
+			glVertexAttribPointer(attr_id[i], size_one_elt[i], GL_FLOAT, GL_FALSE, size_one_elt[i]*sizeof(GLfloat), 0);
 
 			glBindBuffer(GL_ARRAY_BUFFER,0);
 		}
