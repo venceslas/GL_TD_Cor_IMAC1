@@ -3,7 +3,7 @@
 
 namespace glbasimac {
 
-	void GLBI_Convex_2D_Shape::initShape(const std::vector<float> in_coord) {
+	void GLBI_Convex_2D_Shape::initShape(std::vector<float> in_coord) {
 		coord_pts.clear();
 		if (dimension == 2) {
 			assert(in_coord.size()%2 == 0);
@@ -16,7 +16,7 @@ namespace glbasimac {
 		}
 
 		shape.setNbElt(nb_pts);
-		coord_pts = in_coord;
+		coord_pts = std::move(in_coord);
 		shape.addOneBuffer(0,dimension,coord_pts.data(),"Coordinates",false);
 
 		if(!shape.createVAO()) {
