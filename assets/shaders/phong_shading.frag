@@ -91,8 +91,12 @@ vec4 lambert(int idLight) {
 void main()
 {
 	final_col = vec4(0.0,0.0,0.0,1.0);
+	//final_col = vec4(normalize(nml),1.0);
+
 	// final_col = lambert(2);
+	
 	for(int i=0;i<numOfLight;i++) {
 		final_col += lambert(i);
 	}
+	
 }

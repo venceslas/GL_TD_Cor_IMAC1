@@ -19,6 +19,7 @@ void main()
 	gl_Position = projectionMat*modelviewMat*vec4(vx_pos,1.0);
 	uvs = vx_uvs;
 	color = vx_col;
+	//nml = vx_nml;// vec3(normalMat*vec4(vx_nml,0.0));	
 	nml = vec3(normalMat*vec4(vx_nml,0.0));	
 	vec4 pos_t = modelviewMat*vec4(vx_pos,1.0);
 	pos = pos_t.xyz/pos_t.w;

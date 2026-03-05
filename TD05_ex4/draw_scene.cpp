@@ -35,7 +35,7 @@ void initScene() {
 	ground.initShape(baseCarre);
 	ground.changeNature(GL_TRIANGLE_FAN);
 
-	float lg = 10.0;
+	float lg = 100.0;
 	std::vector<float> pts_frame{0.0,0.0,0.0,
 								lg,0.0,0.0,
 								0.0,0.0,0.0,
@@ -97,13 +97,21 @@ void initScene() {
 	a_sml_texture.setParameters(GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	a_sml_texture.detachTexture();
 	
+
+	float power_light = 0.0;
 	myEngine.switchToPhongShading();
-	myEngine.setLightPosition({5.0f,0.0f,15.0,1.0});
-	myEngine.setLightIntensity({100.0,100.0,100.0});
-	myEngine.setConeLight({0.0,0.0,-1.0},M_PI/8.0f);
-	// myEngine.addALight({0.0,1.0,1.0,0.0},{0.0,0.0,1.0});
+	// Classic point light
+	// myEngine.setLightPosition({5.0f,0.0f,15.0,1.0});
+	// myEngine.setLightIntensity({power_light,power_light,power_light});
+	// myEngine.setAttenuationFactor({2.0,0.0,1.0});
+	// myEngine.setConeLight({0.0,0.0,-1.0},M_PI/8.0f);
+	// Other (directionnal) light
+	// myEngine.addALight({1.0,0.0,1.0,0.0},{0.25,0.25,0.25});
 	// myEngine.addALight({1.0,0.0,1.0,0.0},{0.5,0.0,0.0});
-	// myEngine.setAttenuationFactor({1.0,0.0,1.0});
+	// One directional light
+	myEngine.setLightPosition({1.0f,0.0f,1.0f,0.0f});
+	myEngine.setLightIntensity({0.5,0.5,0.5});
+	myEngine.setAttenuationFactor({1.0,0.0,0.0});
 	myEngine.switchToFlatShading();
 }
 
@@ -199,7 +207,7 @@ void drawScene() {
 
 	myEngine.switchToPhongShading();
 	myEngine.setLightPosition({5.0f*cosf(rot_light/10.0f),5.0f*sinf(rot_light/10.0f),15.0,1.0});
-	// myEngine.setLightPosition({cosf(M_PI+rot_light/10.0f),sinf(M_PI+rot_light/10.0f),1.0,0.0},1);
+	// myEngine.setLightPosition({cosf(rot_light/10.0f),sinf(rot_light/10.0f),1.0,0.0},1);
 	// myEngine.setLightPosition({cosf(rot_light/10.0f),sinf(rot_light/10.0f),1.0,0.0},2);
 	// myEngine.setAttenuationFactor({1.0,0.0,1.0});
 	myEngine.setShininess(32.0);

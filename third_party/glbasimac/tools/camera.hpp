@@ -28,7 +28,7 @@
 #define STP3D_DEFAULT_LEFT_RIGHT 0.1*0.577350269
 #define STP3D_DEFAULT_TOP_BOTTOM 0.1*0.577350269
 #define STP3D_DEFAULT_NEAR       0.1
-#define STP3D_DEFAULT_FAR        100.0
+#define STP3D_DEFAULT_FAR        500.0
 
 
 namespace STP3D {
@@ -82,6 +82,14 @@ public:
 	void setIntrisic(Matrix4D newProj) {projMatrix = newProj;};
 	/// Set the projection for the camera
 	void setProjection(Matrix4D newProj) {projMatrix = newProj;};
+	/// Set new far plane
+	void setNearFarPlane(float new_near,float new_far) {
+		projMatrix = Matrix4D::perspective(-1.0*STP3D_DEFAULT_LEFT_RIGHT,STP3D_DEFAULT_LEFT_RIGHT,
+		                                    -1.0*STP3D_DEFAULT_TOP_BOTTOM,STP3D_DEFAULT_TOP_BOTTOM,
+		                                    new_near,new_far);
+	}
+	/// Set new far plane
+	void setNearPlane(float new_near);
 	//@}
 
 	/// Return the camera to its initial position and orientation
