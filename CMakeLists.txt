@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Librairies
 
+set(TDFRAMEWORK_ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets" CACHE PATH "Assets directory")
+
 # ---Add GL---
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})

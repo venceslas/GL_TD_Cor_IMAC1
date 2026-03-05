@@ -18,6 +18,7 @@ foreach(EXE_SRC_FILE ${EXE_SRC_FILES})
 		CXX_EXTENSIONS NO
 	)
 	set_target_properties(${OUTPUT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+	target_compile_definitions(${OUTPUT} PRIVATE PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 	if (MSVC)
 		target_compile_options(${OUTPUT} PRIVATE /W3)
 	else()

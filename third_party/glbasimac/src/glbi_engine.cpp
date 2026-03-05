@@ -11,7 +11,7 @@ namespace glbasimac {
 
 		if (mode2D) {
 			std::cerr<<"Flat 2D"<<std::endl;
-			idShader[0] = ShaderManager::loadShader("../assets/shaders/flat_shading_2D.vert","../assets/shaders/flat_shading.frag",true);
+			idShader[0] = ShaderManager::loadShader(std::string(PROJECT_ROOT) + "assets/shaders/flat_shading_2D.vert",std::string(PROJECT_ROOT) + "assets/shaders/flat_shading.frag",true);
 		}
 		else {
 			std::cerr<<"Flat 3D"<<std::endl;

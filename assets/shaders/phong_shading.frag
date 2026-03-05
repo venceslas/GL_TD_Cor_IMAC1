@@ -85,7 +85,7 @@ vec4 lambert(int idLight) {
 		c_dif = vec4(color,1.0f);
 	}
 	//return vec4(c_dif.rgb*(L*attenuation)*cos_illu,1.);
-	return c_dif*vec4(L,1.0f)*attenuation*cos_illu + vec4(spec_intensity*(L*attenuation)*c_spec,1.0f);
+	return c_dif*vec4(L,1.0f)*attenuation*cos_illu ;//+ vec4(spec_intensity*(L*attenuation)*c_spec,1.0f);
 }
 
 void main()

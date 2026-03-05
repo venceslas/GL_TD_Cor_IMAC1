@@ -1,0 +1,5 @@
+#pragma once
+
+namespace glbasimac {
+    inline constexpr const char* ASSETS_DIR = "@GLBASIMAC_ASSETS_DIR@";
+}

@@ -98,20 +98,20 @@ void initScene() {
 	a_sml_texture.detachTexture();
 	
 
-	float power_light = 0.0;
+	float power_light = 100.0;
 	myEngine.switchToPhongShading();
 	// Classic point light
-	// myEngine.setLightPosition({5.0f,0.0f,15.0,1.0});
-	// myEngine.setLightIntensity({power_light,power_light,power_light});
-	// myEngine.setAttenuationFactor({2.0,0.0,1.0});
+	myEngine.setLightPosition({5.0f,0.0f,15.0,1.0});
+	myEngine.setLightIntensity({power_light,power_light,power_light});
+	myEngine.setAttenuationFactor({1.0,0.0,1.0});
 	// myEngine.setConeLight({0.0,0.0,-1.0},M_PI/8.0f);
 	// Other (directionnal) light
-	// myEngine.addALight({1.0,0.0,1.0,0.0},{0.25,0.25,0.25});
+	myEngine.addALight({-1.0,0.0,1.0,0.0},{0.5,0.5,.95});
 	// myEngine.addALight({1.0,0.0,1.0,0.0},{0.5,0.0,0.0});
 	// One directional light
-	myEngine.setLightPosition({1.0f,0.0f,1.0f,0.0f});
-	myEngine.setLightIntensity({0.5,0.5,0.5});
-	myEngine.setAttenuationFactor({1.0,0.0,0.0});
+	// myEngine.setLightPosition({1.0f,0.0f,1.0f,0.0f});
+	// myEngine.setLightIntensity({0.5,0.5,0.5});
+	// myEngine.setAttenuationFactor({1.0,0.0,0.0});
 	myEngine.switchToFlatShading();
 }
 
@@ -121,7 +121,7 @@ void drawFrame() {
 
 void drawBase() {
 	// TO DO
-	myEngine.setFlatColor(0.921568627f,0.811764706f,0.203921569f);
+	myEngine.setFlatColor(0.921568627f,0.811764706f,0.83921569f);
 	myEngine.mvMatrixStack.pushMatrix();
 		myEngine.mvMatrixStack.addTranslation({0.0,0.0,0.1});
 		//myEngine.mvMatrixStack.addHomothety(3.0);
@@ -131,6 +131,7 @@ void drawBase() {
 		disque.drawShape();
 	myEngine.mvMatrixStack.popMatrix();
 
+	myEngine.setFlatColor(0.921568627f,0.811764706f,0.03921569f);
 	myEngine.mvMatrixStack.pushMatrix();
 		myEngine.mvMatrixStack.addTranslation({0.0,0.0,0.1});
 		myEngine.mvMatrixStack.addRotation(M_PI/2.0,{1.0,0.0,0.0});
@@ -170,7 +171,7 @@ void drawPan() {
 	
 		myEngine.mvMatrixStack.addTranslation({0.0,0.0,-5.0});
 		myEngine.mvMatrixStack.addHomothety(3.0);
-		myEngine.setFlatColor(0.349019608,0.450980392,0.0);
+		myEngine.setFlatColor(0.349019608,0.450980392,0.1);
 		myEngine.updateMvMatrix();
 		myEngine.setNormalForConvex2DShape({0.0,0.0,1.0});
 		disque.drawShape();
@@ -192,8 +193,8 @@ void drawScene() {
 	}
 	
 
-	myEngine.setFlatColor(0.2,0.0,0.0);
-	ground.drawShape();
+	// myEngine.setFlatColor(0.2,0.0,0.0);
+	// ground.drawShape();
 
 	drawFrame();
 
